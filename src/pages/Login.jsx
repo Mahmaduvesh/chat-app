@@ -8,8 +8,8 @@ const Login = () => {
         <span className="logo">Chat App</span>
         <span className="title">Login</span>
         <form>
-          <input type="email" placeholder="email" name="" value="" />
-          <input type="password" placeholder="password" name="" value="" />
+          <input type="email" placeholder="email" name="email" />
+          <input type="password" placeholder="password" name="password" />
 
           <button>Sign in</button>
         </form>

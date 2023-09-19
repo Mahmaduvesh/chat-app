@@ -1,3 +1,7 @@
 Installation Package for this Project :
 ----------------------------------------
-yarn add sass
+yarn add scss
+
+Create Firebase Database
+-------------------------
+Login firebase with Official mail id
