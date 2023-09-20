@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import add from "../images/addAvtar.png";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firbase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, storage, db } from "../firbase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const [err, setErr] = useState(false);
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const displayName = e.target[0].value;
@@ -11,7 +17,40 @@ const Register = () => {
     const password = e.target[2].value;
     const file = e.target[3].files[0];
 
-    await createUserWithEmailAndPassword(auth, email, password);
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+
+      const storageRef = ref(storage, displayName);
+
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        (error) => {
+          setErr(true);
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            await updateProfile(res.user, {
+              displayName,
+              photoURL: downloadURL,
+            });
+            await setDoc(doc(db, "users", res.user.uid), {
+              uid: res.user.uid,
+              displayName,
+              email,
+              photoURL: downloadURL,
+            });
+
+            await setDoc(doc(db, "userChats", res.user.uid), {});
+            navigate("/");
+          });
+        }
+      );
+    } catch (error) {
+      setErr(true);
+    }
   };
 
   return (
@@ -23,18 +62,13 @@ const Register = () => {
           <input type="text" placeholder="display name" name="displayName" />
           <input type="email" placeholder="email" name="email" />
           <input type="password" placeholder="password" name="password" />
-          <input
-            type="file"
-            style={{ display: "none" }}
-            id="file"
-            name=""
-            value=""
-          />
-          <label htmlFor="">
+          <input type="file" style={{ display: "none" }} id="file" />
+          <label htmlFor="file">
             <img src={add} alt="" />
             <span>Add an avtar</span>
           </label>
           <button>Sign Up</button>
+          {err && <span>Something Went Wrong</span>}
         </form>
         <p>You do have an account? Login</p>
       </div>
