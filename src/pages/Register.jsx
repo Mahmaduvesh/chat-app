@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import add from "../images/addAvtar.png";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, storage, db } from "../firbase";
+import { auth, db, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [err, setErr] = useState(false);
@@ -26,16 +26,17 @@ const Register = () => {
 
       uploadTask.on(
         (error) => {
+          // Handle unsuccessful uploads
           setErr(true);
         },
         () => {
           // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
             await updateProfile(res.user, {
               displayName,
               photoURL: downloadURL,
             });
+
             await setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
               displayName,
@@ -48,7 +49,7 @@ const Register = () => {
           });
         }
       );
-    } catch (error) {
+    } catch {
       setErr(true);
     }
   };
@@ -70,7 +71,9 @@ const Register = () => {
           <button>Sign Up</button>
           {err && <span>Something Went Wrong</span>}
         </form>
-        <p>You do have an account? Login</p>
+        <p>
+          You do have an account? <Link to="/login">Login</Link>
+        </p>
       </div>
     </div>
   );
