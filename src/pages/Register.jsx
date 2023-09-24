@@ -25,7 +25,7 @@ const Register = () => {
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
-        (error) => {
+        (err) => {
           // Handle unsuccessful uploads
           setErr(true);
         },
