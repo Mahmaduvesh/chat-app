@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
+import LogoIcon from "../images/login.png";
 
 const Login = () => {
   const [err, setErr] = useState(false);
@@ -25,6 +26,7 @@ const Login = () => {
       <div className="formWrapper">
         <span className="logo">Chat App</span>
         <span className="title">Login</span>
+        <img src={LogoIcon} alt="" />
         <form onSubmit={handleSubmit}>
           <input type="email" placeholder="email" name="email" />
           <input type="password" placeholder="password" name="password" />

@@ -5,6 +5,7 @@ import { auth, db, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
+import LogoIcon from "../images/login.png";
 
 const Register = () => {
   const [err, setErr] = useState(false);
@@ -59,6 +60,7 @@ const Register = () => {
       <div className="formWrapper">
         <span className="logo">Chat App</span>
         <span className="title">Register</span>
+        <img src={LogoIcon} alt="" />
         <form onSubmit={handleSubmit}>
           <input type="text" placeholder="display name" name="displayName" />
           <input type="email" placeholder="email" name="email" />
